@@ -1,30 +1,22 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.datasets import load_iris
+from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-# Load data
-d = load_iris()
-x, y = d.data[:, :2], d.target  # Use the first two features
+# Load the Iris dataset
+iris = datasets.load_iris()
+X = iris.data  # Features
+y = iris.target  # Labels
 
-# Split data
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = SVC().fit(X_train, y_train)
 
-# Train SVM
-svm = SVC(kernel='linear')
-svm.fit(x_train, y_train)
+y_pred = model.predict(X_test)
 
-# Predict and calculate accuracy
-y_pred = svm.predict(x_test)
-acc = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {acc:.2f}")
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
 
-# Scatter plot using Seaborn
-sns.scatterplot(x=x_test[:, 0], y=x_test[:, 1], hue=y_pred, palette='coolwarm')
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-plt.title('SVM Classification Results')
+print(f"Accuracy: {accuracy:.4f}")
+
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
 plt.show()
